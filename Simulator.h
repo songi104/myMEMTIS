@@ -1,34 +1,32 @@
 #pragma once
-#include <vector>
 #include <unordered_map>
 #include <array>
+#include <cstdint>
 
 using namespace std;
 
-class Bin {
+struct Bin
+{
+    int page_count=0;
 
-public:
-    Bin() : accessCount(0) {}
-    vector<int> pages;
-    int accessCount;
-    void clear();
-    void adjustBinCount();
-    int getAccessCount() const { return accessCount; }
 };
 
-
 class Simulator {
-private:
-    int page_size;
-    unordered_map<int, int> pages;
-
 public:
-    array<Bin*, 16> bins;
-    Simulator(int page_size);
+    Simulator(int page_size, int bin_count);
+    array<Bin, 16> bins;
+    unordered_map<uint64_t, int> pages_SSD;
+    int page_size;
+    int bin_count;
+    uint64_t fast_memory_size;
+    uint64_t capacity_memory_size;
+
+    void setMomorySize(uint64_t total_memory_size, int ratio_fast, int ratio_capacity);
     
-    void process(int input);
-    
+    void process(uint64_t input);
+    void cooling();
     void addPage(int page_address);
-    //void cooling();
+    
+    void migrate();
     void setThreshold();
 };
